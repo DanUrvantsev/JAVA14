@@ -45,43 +45,31 @@ class ShopRepositoryTest {
 
     @Test
     void shouldAddProductSuccessfully() {
-
         ShopRepository repository = new ShopRepository();
         Product product = new Product(1, "Книга", 500);
-
-
         repository.add(product);
 
+        Product[] expected = {product};
+        Product[] actual = repository.findAll();
 
-        Product[] products = repository.findAll();
-        assertEquals(1, products.length);
-        assertEquals(product, products[0]);
+        assertArrayEquals(expected, actual); // Проверка всего массива
     }
 
     @Test
     void shouldThrowAlreadyExistsExceptionForDuplicateId() {
-
         ShopRepository repository = new ShopRepository();
         Product product1 = new Product(1, "Ручка", 50);
         Product product2 = new Product(1, "Карандаш", 30);
         repository.add(product1);
 
-
         AlreadyExistsException exception = assertThrows(
                 AlreadyExistsException.class,
                 () -> repository.add(product2)
         );
+        assertEquals("Товар с ID 1 уже существует", exception.getMessage());
 
-        assertEquals(
-                "Товар с ID 1 уже существует",
-                exception.getMessage(),
-                "Сообщение об ошибке не совпадает"
-        );
-
-
-        Product[] products = repository.findAll();
-        assertEquals(1, products.length);
-        assertEquals(product1, products[0]);
+        Product[] expected = {product1};
+        Product[] actual = repository.findAll();
+        assertArrayEquals(expected, actual); // Проверка всего массива
     }
-
 }
